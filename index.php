@@ -12,6 +12,7 @@ include_once("index_top.php");
     });
     
     function simu(){
+        var anciennete = eval($("#anciennete").val());
         var prime_anfa = eval($("#anfa_prime").val());
         var prime_fpc = eval($("#fpc_prime").val());
         var ech_anfa = eval($("#echanfa").prop("selectedIndex"));
@@ -19,7 +20,7 @@ include_once("index_top.php");
         var cat_anfa = eval($("#catanfa").val());
         var cat_fpc = eval($("#catfpc").val());
         $.get( "loadsimu.php", {
-            prime_anfa:prime_anfa,prime_fpc:prime_fpc,ech_anfa:ech_anfa,ech_fpc:ech_fpc,cat_anfa:cat_anfa,cat_fpc:cat_fpc
+            anciennete:anciennete,prime_anfa:prime_anfa,prime_fpc:prime_fpc,ech_anfa:ech_anfa,ech_fpc:ech_fpc,cat_anfa:cat_anfa,cat_fpc:cat_fpc
         } ,function(response) {
             //alert(response);
             $('#div_simu').empty();
@@ -51,21 +52,31 @@ include_once("index_top.php");
     
     function calc_anfa(){
         var base = eval($("#echanfa").val());
+        var anciennete = eval($("#anciennete").val());
         var prime1 = eval($("#anfa_prime1").val());
         var prime2 = eval($("#anfa_prime2").val());
         var prime3 = eval($("#anfa_prime3").val());
         var prime4 = eval($("#anfa_prime4").val());
         var prime5 = eval($("#anfa_prime5").val());
+        var pourcent = (0.025*anciennete)+1;
         var total;
         var primes;
         
-        total = base+prime1+prime2+prime3+prime4+prime5;
+        if(anciennete>0){
+            total = roundNumber(eval(base*pourcent),0)+prime1+prime2+prime3+prime4+prime5;
+        }else{
+            total = base+prime1+prime2+prime3+prime4+prime5;
+        }
         $("#salaire_anfa").html("Salaire Actuel : "+total+" F");
         
         primes = prime1+prime2+prime3+prime4+prime5;
         $("#anfa_prime").val(primes);
     }
     
+    function roundNumber(num, dec) {
+	var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+	return result;
+    }
       function calc_fpc(){
         var base = eval($("#echfpc").val());
         var prime1 = eval($("#fpc_prime1").val());
@@ -101,6 +112,7 @@ include_once("index_top.php");
     <select id="echanfa">
     </select>
     <br/>
+    Ancienneté (cat 5 uniquement)<input type="text" id="anciennete" value="0" /><br/>
     Prime1 <input type="text" id="anfa_prime1" value="0" /><br/>
     Prime2 <input type="text" id="anfa_prime2" value="0" /><br/>
     Prime3 <input type="text" id="anfa_prime3" value="0" /><br/>

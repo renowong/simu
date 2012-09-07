@@ -13,7 +13,6 @@ $cat_fpc = $_GET['cat_fpc'];
 //print $ech_anfa;
 load_simu($anciennete,$cat_anfa,$cat_fpc,$ech_anfa,$ech_fpc,$prime_anfa,$prime_fpc);
 
-
 function load_simu($anciennete,$cat_anfa,$cat_fpc,$ech_anfa,$ech_fpc,$prime_anfa,$prime_fpc){
    if($cat_anfa=='5'){
         print load_secondary_anfa($anciennete,$cat_anfa,$cat_fpc,$ech_anfa,$ech_fpc,$prime_anfa,$prime_fpc); 
@@ -37,7 +36,7 @@ if ($mysqli->connect_errno) {
     if ($result = $mysqli->query($query)) {
         $row = $result->fetch_assoc();
         $s_anfa = $row['salaire'];
-        $s_anfa = $s_anfa*(($anciennete*0.025)+1);
+        $s_anfa = $s_anfa*(($anciennete/100)+1);
         $s_anfa = round($s_anfa);
         
         
@@ -55,9 +54,10 @@ if ($mysqli->connect_errno) {
     $mysqli->close();
     
     $compens = ($s_anfa+$prime_anfa)-($ar_fpc[$ech_fpc-1])*1408+$prime_fpc;
+    if($compens<0){$compens=0;}
     
     $output = "Prime compensatrice lors de l'integration : $compens F<br/><table border=1 cellpadding=10>";
-    $output .= "<tr>";
+    $output .= "<tr><td></td>";
     $j=0;
     for($i=0;$i<11;$i++){
         $output .= "<td>";
@@ -65,24 +65,24 @@ if ($mysqli->connect_errno) {
         $output .= "</td>";
         $j=$j+2;
     }
-    $output .= "</tr><tr>";
+    $output .= "</tr><tr><td>ANFA</td>";
     
     for($i=0;$i<11;$i++){
         $evo = (0.025*$i)+1;
         
         $output .= "<td>";
-        $output .= round($s_anfa*$evo)+$prime_anfa." F";
+        $output .= trispace(round($s_anfa*$evo)+$prime_anfa)." F";
         $output .= "</td>";
     }
     
-    $output .= "</tr><tr>";
+    $output .= "</tr><tr><td>FPC</td>";
     
     for($i=$ech_fpc-1;$i<12;$i++){
         $output .= "<td>";
         if(($s_anfa+$prime_anfa)>(($ar_fpc[$i])*1408+$prime_fpc)){
             $output .= $s_anfa+$prime_anfa." F";
         }else{
-            $output .= ($ar_fpc[$i])*1408+$prime_fpc." F";
+            $output .= trispace(($ar_fpc[$i])*1408+$prime_fpc)." F";
         }
         $output .= "</td>";
     }
@@ -120,9 +120,10 @@ if ($mysqli->connect_errno) {
     $mysqli->close();
     
     $compens = ($ar_anfa[$ech_anfa-1]+$prime_anfa)-($ar_fpc[$ech_fpc-1])*1408+$prime_fpc;
+    if($compens<0){$compens=0;}
     
     $output = "Prime compensatrice lors de l'integration : $compens F<br/><table border=1 cellpadding=10>";
-    $output .= "<tr>";
+    $output .= "<tr><td></td>";
     $j=0;
     for($i=$ech_anfa-1;$i<11;$i++){
         $output .= "<td>";
@@ -130,15 +131,15 @@ if ($mysqli->connect_errno) {
         $output .= "</td>";
         $j=$j+2.5;
     }
-    $output .= "</tr><tr>";
+    $output .= "</tr><tr><td>ANFA</td>";
     
     for($i=$ech_anfa-1;$i<11;$i++){
         $output .= "<td>";
-        $output .= $ar_anfa[$i]+$prime_anfa." F";
+        $output .= trispace($ar_anfa[$i]+$prime_anfa)." F";
         $output .= "</td>";
     }
     
-    $output .= "</tr><tr>";
+    $output .= "</tr><tr><td>FPC</td>";
     
     $j=$ech_anfa-1;
     for($i=$ech_fpc-1;$i<12;$i++){
@@ -146,7 +147,7 @@ if ($mysqli->connect_errno) {
         if(($ar_anfa[$j]+$prime_anfa)>(($ar_fpc[$i])*1408+$prime_fpc)){
             $output .= $ar_anfa[$j]+$prime_anfa." F";
         }else{
-            $output .= ($ar_fpc[$i])*1408+$prime_fpc." F";
+            $output .= trispace(($ar_fpc[$i])*1408+$prime_fpc)." F";
         }
         $output .= "</td>";
     }
@@ -155,5 +156,9 @@ if ($mysqli->connect_errno) {
     $output .= "</table>";
     
     return $output;
+}
+
+function trispace($n){
+	return number_format($n, 0, ',', ' ');
 }
 ?>

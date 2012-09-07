@@ -24,7 +24,9 @@ function load_simu($anciennete,$cat_anfa,$cat_fpc,$ech_anfa,$ech_fpc,$prime_anfa
 
 function load_secondary_anfa($anciennete,$cat_anfa,$cat_fpc,$ech_anfa,$ech_fpc,$prime_anfa,$prime_fpc){
     $mysqli = new mysqli(DBSERVER, DBUSER, DBPWD, DB);
-
+    $ar_simu_anfa = array();
+    $ar_simu_fpc = array();
+    
     /* check connection */
 if ($mysqli->connect_errno) {
     printf("Connect failed: %s\n", $mysqli->connect_error);
@@ -59,7 +61,7 @@ if ($mysqli->connect_errno) {
     $output = "Prime compensatrice lors de l'integration : $compens F<br/><table border=1 cellpadding=10>";
     $output .= "<tr><td></td>";
     $j=0;
-    for($i=0;$i<11;$i++){
+    for($i=0;$i<=13;$i++){
         $output .= "<td>";
         $output .= $j;
         $output .= "</td>";
@@ -67,23 +69,36 @@ if ($mysqli->connect_errno) {
     }
     $output .= "</tr><tr><td>ANFA</td>";
     
-    for($i=0;$i<11;$i++){
+    for($i=0;$i<=13;$i++){
         $evo = (0.025*$i)+1;
         
         $output .= "<td>";
+        array_push($ar_simu_anfa,(round($s_anfa*$evo)+$prime_anfa));
         $output .= trispace(round($s_anfa*$evo)+$prime_anfa)." F";
         $output .= "</td>";
     }
     
     $output .= "</tr><tr><td>FPC</td>";
     
-    for($i=$ech_fpc-1;$i<12;$i++){
+    for($i=$ech_fpc-1;$i<=13;$i++){
         $output .= "<td>";
-        if(($s_anfa+$prime_anfa)>(($ar_fpc[$i])*1408+$prime_fpc)){
+        if(($s_anfa+$prime_anfa)>(($ar_fpc[$i])*1408+$prime_fpc)&&$i<11){
+            array_push($ar_simu_fpc,$s_anfa+$prime_anfa);
             $output .= $s_anfa+$prime_anfa." F";
         }else{
-            $output .= trispace(($ar_fpc[$i])*1408+$prime_fpc)." F";
+            if($i<=11){$lastfpc=(($ar_fpc[$i])*1408+$prime_fpc);}
+            array_push($ar_simu_fpc,$lastfpc);
+            $output .= trispace($lastfpc)." F";
         }
+        $output .= "</td>";
+    }
+    
+        $output .= "</tr><tr><td>DIFF (FPC-ANFA)</td>";
+
+
+    for($i=0;$i<count($ar_simu_anfa)-1;$i++){
+        $output .= "<td>";
+        $output .= trispace($ar_simu_fpc[$i]-$ar_simu_anfa[$i])." F";
         $output .= "</td>";
     }
     
@@ -160,12 +175,12 @@ if ($mysqli->connect_errno) {
         $output .= "</td>";
     }
     
-    $output .= "</tr><tr><td>DIFF</td>";
+    $output .= "</tr><tr><td>DIFF (FPC-ANFA)</td>";
 
 
     for($i=0;$i<count($ar_simu_anfa)-1;$i++){
         $output .= "<td>";
-        $output .= trispace($ar_simu_anfa[$i]-$ar_simu_fpc[$i])." F";
+        $output .= trispace($ar_simu_fpc[$i]-$ar_simu_anfa[$i])." F";
         $output .= "</td>";
     }
     

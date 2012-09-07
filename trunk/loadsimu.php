@@ -96,6 +96,9 @@ if ($mysqli->connect_errno) {
 function load_primary_anfa($cat_anfa,$cat_fpc,$ech_anfa,$ech_fpc,$prime_anfa,$prime_fpc){
     $mysqli = new mysqli(DBSERVER, DBUSER, DBPWD, DB);
 
+    $ar_simu_anfa = array();
+    $ar_simu_fpc = array();
+    
     /* check connection */
 if ($mysqli->connect_errno) {
     printf("Connect failed: %s\n", $mysqli->connect_error);
@@ -125,7 +128,7 @@ if ($mysqli->connect_errno) {
     $output = "Prime compensatrice lors de l'integration : $compens F<br/><table border=1 cellpadding=10>";
     $output .= "<tr><td></td>";
     $j=0;
-    for($i=$ech_anfa-1;$i<11;$i++){
+    for($i=$ech_anfa-1;$i<=13;$i++){
         $output .= "<td>";
         $output .= $j;
         $output .= "</td>";
@@ -133,22 +136,36 @@ if ($mysqli->connect_errno) {
     }
     $output .= "</tr><tr><td>ANFA</td>";
     
-    for($i=$ech_anfa-1;$i<11;$i++){
+    for($i=$ech_anfa-1;$i<=13;$i++){
         $output .= "<td>";
-        $output .= trispace($ar_anfa[$i]+$prime_anfa)." F";
+        if($i<=10){$lastanfa=$ar_anfa[$i]+$prime_anfa;}
+        array_push($ar_simu_anfa,$lastanfa);
+        $output .= trispace($lastanfa)." F";
         $output .= "</td>";
     }
     
     $output .= "</tr><tr><td>FPC</td>";
     
     $j=$ech_anfa-1;
-    for($i=$ech_fpc-1;$i<12;$i++){
+    for($i=$ech_fpc-1;$i<=13;$i++){
         $output .= "<td>";
-        if(($ar_anfa[$j]+$prime_anfa)>(($ar_fpc[$i])*1408+$prime_fpc)){
-            $output .= $ar_anfa[$j]+$prime_anfa." F";
+        if(($ar_anfa[$j]+$prime_anfa)>(($ar_fpc[$i])*1408+$prime_fpc)&&$i<=11){
+            array_push($ar_simu_fpc,$ar_anfa[$j]+$prime_anfa);
+            $output .= trispace($ar_anfa[$j]+$prime_anfa)." F";
         }else{
-            $output .= trispace(($ar_fpc[$i])*1408+$prime_fpc)." F";
+            if($i<=11){$lastfpc=(($ar_fpc[$i])*1408+$prime_fpc);}
+            array_push($ar_simu_fpc,$lastfpc);
+            $output .= trispace($lastfpc)." F";
         }
+        $output .= "</td>";
+    }
+    
+    $output .= "</tr><tr><td>DIFF</td>";
+
+
+    for($i=0;$i<count($ar_simu_anfa)-1;$i++){
+        $output .= "<td>";
+        $output .= trispace($ar_simu_anfa[$i]-$ar_simu_fpc[$i])." F";
         $output .= "</td>";
     }
     

@@ -136,6 +136,7 @@ include_once("index_top.php");
     <select id="echanfa">
     </select>
     <br/>
+    <table><tr><td>
     Ancienneté (cat 5 uniquement)<input type="text" id="anciennete" value="0" /><br/>
     SFT <input type="text" id="anfa_prime1" value="0" /><br/>
     Complement solde <input type="text" id="anfa_prime2" value="0" /><br/>
@@ -143,12 +144,15 @@ include_once("index_top.php");
     Prime d'ancienneté <input type="text" id="anfa_prime4" value="0" /><br/>
     Indemnité de sujétion <input type="text" id="anfa_prime5" value="0" /><br/>
     Indemnité de salisure <input type="text" id="anfa_prime6" value="0" /><br/>
+    </td><td>
     Indemnité de nuit <input type="text" id="anfa_prime7" value="0" /><br/>
     Indemnité de panier <input type="text" id="anfa_prime8" value="0" /><br/>
     Indemnité d'astreinte <input type="text" id="anfa_prime9" value="0" /><br/>
     Prime de diplome <input type="text" id="anfa_prime10" value="0" /><br/>
     Indemnité compensatrice <input type="text" id="anfa_prime11" value="0" /><br/>
     Prime de risque <input type="text" id="anfa_prime12" value="0" /><br/>
+    </td></tr>
+    </table>
     <input type="hidden" id="anfa_prime"/>
     <button onclick="javascript:calc_anfa();">Calculer</button>
     <div id="salaire_anfa"></div> 
@@ -172,14 +176,18 @@ include_once("index_top.php");
     <select id="echfpc">
     </select>
       <br/>
+      <table><tr><td>
     Indemnite de sujétion : salisure <input type="text" id="fpc_prime1" value="0" /><br/>
     IFTS <input type="text" id="fpc_prime2" value="0" /><br/>
     Prime de responsabilité <input type="text" id="fpc_prime3" value="0" /><br/>
     Prime de polyvalence <input type="text" id="fpc_prime4" value="0" /><br/>
+    </td><td>
     Indemnité de spécialisation <input type="text" id="fpc_prime5" value="0" /><br/>
     Indemnité de sujétion :caisse <input type="text" id="fpc_prime6" value="0" /><br/>
     Indemnité de sujétion : nuit <input type="text" id="fpc_prime7" value="0" /><br/>
     Prime d'isolement <input type="text" id="fpc_prime8" value="0" /><br/>
+    </td></tr>
+      </table>
     <input type="hidden" id="fpc_prime"/>
     <button onclick="javascript:calc_fpc();">Calculer</button>
     <div id="salaire_fpc"></div> 

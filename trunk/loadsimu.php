@@ -55,7 +55,7 @@ if ($mysqli->connect_errno) {
     
     $mysqli->close();
     
-    $compens = ($s_anfa+$prime_anfa)-($ar_fpc[$ech_fpc-1])*1408+$prime_fpc;
+    $compens = ($ar_anfa[$ech_anfa-1]+$prime_anfa)-((($ar_fpc[$ech_fpc-1])*1408)+$prime_fpc);
     if($compens<0){$compens=0;}
     
     $output = "Prime compensatrice lors de l'integration : $compens F<br/><table border=1 cellpadding=10>";
@@ -137,7 +137,8 @@ if ($mysqli->connect_errno) {
     
     $mysqli->close();
     
-    $compens = ($ar_anfa[$ech_anfa-1]+$prime_anfa)-($ar_fpc[$ech_fpc-1])*1408+$prime_fpc;
+    $compens = ($ar_anfa[$ech_anfa-1]+$prime_anfa)-((($ar_fpc[$ech_fpc-1])*1408)+$prime_fpc);
+    //$compens = (($ar_fpc[$ech_fpc-1])*1408)+$prime_fpc;
     if($compens<0){$compens=0;}
     
     $output = "Prime compensatrice lors de l'integration : $compens F<br/><table border=1 cellpadding=10>";
